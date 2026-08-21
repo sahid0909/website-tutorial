@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Admin - BelajarTekno</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="container navbar">
+
+<div class="logo">
+Belajar<span>Tekno</span>
+</div>
+
+<nav>
+<a href="/">Beranda</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<h1>Admin Tutorial</h1>
+
+
+<div class="card">
+
+<h2 id="judulForm">
+Tambah Tutorial
+</h2>
+
+
+<input
+type="hidden"
+id="id"
+>
+
+
+<label>Judul</label>
+
+<input
+type="text"
+id="judul"
+placeholder="Judul tutorial"
+style="width:100%;padding:12px;margin:10px 0 20px;"
+>
+
+
+<label>Kategori</label>
+
+<select
+id="kategori"
+style="width:100%;padding:12px;margin:10px 0 20px;"
+>
+
+<option>Pemrograman</option>
+<option>Komputer</option>
+<option>Server</option>
+<option>Jaringan</option>
+<option>Teknologi</option>
+
+</select>
+
+
+<label>Gambar Tutorial</label>
+
+<input
+type="file"
+id="gambarFile"
+accept="image/*"
+onchange="previewGambar()"
+style="width:100%;padding:12px;margin:10px 0 10px;"
+>
+
+
+<img
+id="preview"
+style="display:none;width:100%;max-width:600px;height:250px;object-fit:cover;border-radius:8px;margin-bottom:20px;"
+>
+
+
+<label>Isi Tutorial</label>
+
+<textarea
+id="isi"
+placeholder="Tulis isi tutorial..."
+style="width:100%;height:300px;padding:12px;margin:10px 0 20px;"
+></textarea>
+
+
+<button
+onclick="simpan()"
+style="background:#2563eb;color:white;border:none;padding:12px 25px;border-radius:6px;cursor:pointer;"
+>
+Simpan
+</button>
+
+
+<button
+onclick="batalEdit()"
+style="padding:12px 25px;margin-left:10px;"
+>
+Batal
+</button>
+
+</div>
+
+
+<h2>Daftar Tutorial</h2>
+
+<div id="daftar">
+Memuat artikel...
+</div>
+
+</main>
+
+
+<script>
+
+let artikel = [];
+
+
+// ============================
+// AMBIL DATA
+// ============================
+
+async function ambilData() {
+
+    const response =
+        await fetch("/api/artikel");
+
+    artikel =
+        await response.json();
+
+    tampilkan();
+
+}
+
+
+// ============================
+// PREVIEW GAMBAR
+// ============================
+
+function previewGambar() {
+
+    const file =
+        document.getElementById(
+            "gambarFile"
+        ).files[0];
+
+
+    if (!file) {
+
+        return;
+
+    }
+
+
+    const preview =
+        document.getElementById(
+            "preview"
+        );
+
+
+    preview.src =
+        URL.createObjectURL(file);
+
+
+    preview.style.display =
+        "block";
+
+}
+
+
+// ============================
+// UPLOAD GAMBAR
+// ============================
+
+async function uploadGambar() {
+
+    const file =
+        document.getElementById(
+            "gambarFile"
+        ).files[0];
+
+
+    if (!file) {
+
+        return "";
+
+    }
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "gambar",
+        file
+    );
+
+
+    const response =
+        await fetch(
+            "/api/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+
+    const hasil =
+        await response.json();
+
+
+    if (
+        hasil.status !==
+        "berhasil"
+    ) {
+
+        throw new Error(
+            hasil.pesan ||
+            "Upload gagal."
+        );
+
+    }
+
+
+    return hasil.url;
+
+}
+
+
+// ============================
+// TAMPILKAN ARTIKEL
+// ============================
+
+function tampilkan() {
+
+    const daftar =
+        document.getElementById(
+            "daftar"
+        );
+
+
+    if (artikel.length === 0) {
+
+        daftar.innerHTML =
+            "<p>Belum ada artikel.</p>";
+
+        return;
+
+    }
+
+
+    daftar.innerHTML = "";
+
+
+    artikel.forEach(a => {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "card";
+
+        div.style.marginTop =
+            "20px";
+
+
+        div.innerHTML = `
+
+            ${
+                a.gambar
+                ?
+                `<img
+                    src="${a.gambar}"
+                    alt="${a.judul}"
+                    style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:15px;"
+                >`
+                :
+                ""
+            }
+
+            <div class="category">
+                ${a.kategori || "Umum"}
+            </div>
+
+            <h3>
+                ${a.judul}
+            </h3>
+
+            <p>
+                ${a.isi.substring(0,120)}...
+            </p>
+
+            <button
+                onclick="editArtikel(${a.id})"
+            >
+                Edit
+            </button>
+
+            <button
+                onclick="hapusArtikel(${a.id})"
+                style="background:#dc2626;color:white;border:none;padding:10px;margin-left:10px;border-radius:5px;"
+            >
+                Hapus
+            </button>
+
+        `;
+
+
+        daftar.appendChild(div);
+
+    });
+
+}
+
+
+// ============================
+// SIMPAN
+// ============================
+
+async function simpan() {
+
+    try {
+
+        const id =
+            document.getElementById(
+                "id"
+            ).value;
+
+
+        const judul =
+            document.getElementById(
+                "judul"
+            ).value.trim();
+
+
+        const kategori =
+            document.getElementById(
+                "kategori"
+            ).value;
+
+
+        const isi =
+            document.getElementById(
+                "isi"
+            ).value.trim();
+
+
+        if (!judul || !isi) {
+
+            alert(
+                "Judul dan isi harus diisi."
+            );
+
+            return;
+
+        }
+
+
+        const file =
+            document.getElementById(
+                "gambarFile"
+            ).files[0];
+
+
+        let gambar = "";
+
+
+        if (file) {
+
+            gambar =
+                await uploadGambar();
+
+        }
+
+
+        let url =
+            "/api/artikel";
+
+
+        let method =
+            "POST";
+
+
+        if (id) {
+
+            url =
+                "/api/artikel/" + id;
+
+            method =
+                "PUT";
+
+        }
+
+
+        const response =
+            await fetch(
+                url,
+                {
+
+                    method:
+                        method,
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            judul:
+                                judul,
+
+                            kategori:
+                                kategori,
+
+                            gambar:
+                                gambar,
+
+                            isi:
+                                isi
+
+                        })
+
+                }
+            );
+
+
+        const hasil =
+            await response.json();
+
+
+        if (
+            hasil.status ===
+            "berhasil"
+        ) {
+
+            alert(
+                id
+                ?
+                "Artikel berhasil diperbarui."
+                :
+                "Artikel berhasil ditambahkan."
+            );
+
+
+            batalEdit();
+
+            ambilData();
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Gagal menyimpan: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ============================
+// EDIT
+// ============================
+
+function editArtikel(id) {
+
+    const a =
+        artikel.find(
+            x => x.id === id
+        );
+
+
+    if (!a) {
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "id"
+    ).value = a.id;
+
+
+    document.getElementById(
+        "judul"
+    ).value = a.judul;
+
+
+    document.getElementById(
+        "kategori"
+    ).value =
+        a.kategori ||
+        "Teknologi";
+
+
+    document.getElementById(
+        "isi"
+    ).value = a.isi;
+
+
+    const preview =
+        document.getElementById(
+            "preview"
+        );
+
+
+    if (a.gambar) {
+
+        preview.src =
+            a.gambar;
+
+        preview.style.display =
+            "block";
+
+    } else {
+
+        preview.style.display =
+            "none";
+
+    }
+
+
+    document.getElementById(
+        "judulForm"
+    ).textContent =
+        "Edit Tutorial";
+
+
+    window.scrollTo(
+        0,
+        0
+    );
+
+}
+
+
+// ============================
+// BATAL
+// ============================
+
+function batalEdit() {
+
+    document.getElementById(
+        "id"
+    ).value = "";
+
+
+    document.getElementById(
+        "judul"
+    ).value = "";
+
+
+    document.getElementById(
+        "kategori"
+    ).value =
+        "Pemrograman";
+
+
+    document.getElementById(
+        "gambarFile"
+    ).value = "";
+
+
+    document.getElementById(
+        "preview"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "isi"
+    ).value = "";
+
+
+    document.getElementById(
+        "judulForm"
+    ).textContent =
+        "Tambah Tutorial";
+
+}
+
+
+// ============================
+// HAPUS
+// ============================
+
+async function hapusArtikel(id) {
+
+    const yakin =
+        confirm(
+            "Yakin ingin menghapus artikel ini?"
+        );
+
+
+    if (!yakin) {
+
+        return;
+
+    }
+
+
+    const response =
+        await fetch(
+            "/api/artikel/" + id,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+    const hasil =
+        await response.json();
+
+
+    if (
+        hasil.status ===
+        "berhasil"
+    ) {
+
+        alert(
+            "Artikel berhasil dihapus."
+        );
+
+        ambilData();
+
+    }
+
+}
+
+
+ambilData();
+
+</script>
+
+</body>
+
+</html>
