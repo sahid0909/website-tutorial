@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Website tutorial teknologi untuk belajar komputer, pemrograman, server, dan teknologi.">
+    <title>BelajarTekno - Tutorial Teknologi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container navbar">
+
+        <div class="logo">
+            Belajar<span>Teknologi</span>
+        </div>
+
+        <nav>
+            <a href="/">Beranda</a>
+            <a href="#tutorial">Tutorial</a>
+            <a href="#kategori">Kategori</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<section class="hero">
+
+    <div class="container">
+
+        <h1>Belajar Teknologi dari Nol</h1>
+
+        <p>
+            Tutorial komputer, pemrograman, server, jaringan,
+            dan teknologi untuk pemula.
+        </p>
+
+        <div class="search">
+            <input
+                type="text"
+                id="search"
+                placeholder="Cari tutorial..."
+                onkeyup="cariArtikel()"
+            >
+        </div>
+
+    </div>
+
+</section>
+
+
+<main class="container">
+
+    <section id="kategori">
+
+        <h2>Kategori Tutorial</h2>
+
+        <div class="categories">
+
+            <button onclick="filterKategori('Pemrograman')">
+                Pemrograman
+            </button>
+
+            <button onclick="filterKategori('Komputer')">
+                Komputer
+            </button>
+
+            <button onclick="filterKategori('Server')">
+                Server
+            </button>
+
+            <button onclick="filterKategori('Jaringan')">
+                servis printer
+            </button>
+        </div>
+    </section>
+        <div id="artikel" class="articles">
+
+            <p>Memuat artikel...</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+
+    <div class="container">
+
+        <h3>BelajarTeknologi</h3>
+
+        <p>
+            Belajar teknologi dengan tutorial sederhana dan mudah dipahami.
+        </p>
+
+        <p>
+           RK GROUP © 2026 BelajarTeknologi 
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>

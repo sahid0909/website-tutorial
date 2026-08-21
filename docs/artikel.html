@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title id="pageTitle">
+BelajarTekno - Tutorial Teknologi
+</title>
+
+<meta
+    name="description"
+    id="metaDescription"
+    content="Kumpulan tutorial teknologi."
+>
+
+<meta
+    name="robots"
+    content="index, follow"
+>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="container navbar">
+
+<div class="logo">
+Belajar<span>Tekno</span>
+</div>
+
+<nav>
+
+<a href="./index.html">
+Beranda
+</a>
+
+</nav>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<article class="article-page">
+
+<div class="category">
+TUTORIAL
+</div>
+
+<h1 id="judul">
+Memuat artikel...
+</h1>
+
+<p id="tanggal"></p>
+
+<hr>
+
+<img
+id="gambar"
+style="
+display:none;
+width:100%;
+max-height:450px;
+object-fit:cover;
+border-radius:10px;
+margin:25px 0;
+"
+>
+
+<div
+id="isi"
+class="article-content"
+>
+Memuat isi artikel...
+</div>
+
+</article>
+
+
+<br>
+
+<a href="./index.html">
+← Kembali ke halaman utama
+</a>
+
+</main>
+
+
+<footer>
+
+<div class="container">
+
+<h3>
+BelajarTekno
+</h3>
+
+<p>
+Belajar teknologi dengan tutorial sederhana
+dan mudah dipahami.
+</p>
+
+<p>
+Ac 2026 BelajarTekno
+</p>
+
+</div>
+
+</footer>
+
+
+<script>
+
+async function tampilkanArtikel() {
+
+    try {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const slug =
+            params.get("slug");
+
+        if (!slug) {
+
+            document.getElementById(
+                "judul"
+            ).textContent =
+                "Artikel tidak ditemukan";
+
+            return;
+        }
+
+
+        const response =
+            await fetch("./artikel.json");
+
+
+        const artikel =
+            await response.json();
+
+
+        const data =
+            artikel.find(
+                function(a) {
+
+                    return a.slug === slug;
+
+                }
+            );
+
+
+        if (!data) {
+
+            document.getElementById(
+                "judul"
+            ).textContent =
+                "Artikel tidak ditemukan";
+
+            document.getElementById(
+                "isi"
+            ).textContent =
+                "Artikel yang Anda cari tidak tersedia.";
+
+            return;
+        }
+
+
+        document.getElementById(
+            "judul"
+        ).textContent =
+            data.judul;
+
+
+        document.getElementById(
+            "isi"
+        ).textContent =
+            data.isi;
+
+
+        document.getElementById(
+            "pageTitle"
+        ).textContent =
+            data.judul +
+            " - BelajarTekno";
+
+
+        document
+            .getElementById(
+                "metaDescription"
+            )
+            .setAttribute(
+                "content",
+                (data.isi || "").substring(0,155)
+            );
+
+
+        if (data.gambar) {
+
+            const gambar =
+                document.getElementById(
+                    "gambar"
+                );
+
+            gambar.src =
+                data.gambar;
+
+            gambar.alt =
+                data.judul;
+
+            gambar.style.display =
+                "block";
+        }
+
+
+        if (data.tanggal) {
+
+            const tanggal =
+                new Date(
+                    data.tanggal
+                );
+
+            document.getElementById(
+                "tanggal"
+            ).textContent =
+                tanggal.toLocaleDateString(
+                    "id-ID",
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "judul"
+        ).textContent =
+            "Terjadi kesalahan";
+    }
+}
+
+tampilkanArtikel();
+
+</script>
+
+</body>
+
+</html>
