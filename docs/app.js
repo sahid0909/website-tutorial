@@ -43,7 +43,7 @@ function tampilkanArtikel(data) {
                 article.gambar
                 ?
                 `<img
-                    src="${article.gambar}"
+                    src="${article.gambar ? '.' + article.gambar : ''}"
                     alt="${article.judul}"
                     style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:15px;"
                 >`
