@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const { exec } = require("child_process");
 const childProcess = require("child_process");
 const app = express();
 
@@ -231,9 +232,48 @@ function simpanArtikel(data) {
         ),
         "utf8"
     );
+        }
+
+function jalankanPublikasi() {
+
+    return new Promise((resolve, reject) => {
+
+        exec(
+            "node tools/publish.js",
+            {
+                cwd: __dirname
+            },
+            function (error, stdout, stderr) {
+
+                console.log(stdout);
+
+                if (stderr) {
+                    console.error(stderr);
+                }
+
+                if (error) {
+
+                    console.error(
+                        "Publikasi GitHub gagal:",
+                        error.message
+                    );
+
+                    reject(error);
+
+                    return;
+                }
+
+                resolve();
+
+            }
+        );
+
+    });
 
 }
-function sinkronkanGitHubPages() {
+
+
+async function sinkronkanGitHubPages() {
 
     try {
 
@@ -281,7 +321,7 @@ function sinkronkanGitHubPages() {
                 stdio: "inherit"
             }
         );
-
+await jalankanPublikasi();
         console.log(
             "GitHub Pages berhasil diperbarui."
         );
@@ -333,7 +373,7 @@ function buatSlug(teks) {
 }
 app.post(
     "/api/artikel",
-    function (
+    async function (
         req,
         res
     ) {
@@ -377,7 +417,7 @@ app.post(
             data
         );
         
-        sinkronkanGitHubPages();
+        await sinkronkanGitHubPages();
         
         res.json({
 
@@ -400,7 +440,7 @@ app.post(
 app.post(
     "/api/upload",
     upload.single("gambar"),
-    function (
+    async function (
         req,
         res
     ) {
