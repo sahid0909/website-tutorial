@@ -13,7 +13,7 @@
     "judul": "Lampu tinta dan kertas pada printer Epson L3110",
     "slug": "lampu-tinta-dan-kertas-pada-printer-epson-l3110",
     "kategori": "servis printer",
-    "gambar": "/uploads/gambar-1787388489767.jpg",
+    "gambar": "",
     "isi": "Lampu tinta dan kertas pada printer Epson L3110 yang berkedip bersamaan umumnya menandakan penampung limbah tinta penuh (Waste Ink Pad Full) atau terjadi kendala mekanik/kertas macet (paper jam). \nSolusi utamanya adalah melakukan reset counter menggunakan software khusus atau memeriksa jalur kertas.\nCara Mengatasi dengan ResetterUnduh aplikasi Adjustment Program atau resetter khusus Epson L3110.Sambungkan printer ke komputer menggunakan kabel USB.\nBuka aplikasi, lalu pilih menu Particular adjustment mode.\nCari dan pilih opsi Waste ink pad counter, lalu klik OK.Centang bagian Main pad counter, lalu klik Check dan lanjutkan dengan klik Initialization.\nMatikan printer setelah proses selesai, lalu nyalakan kembali.\nPemeriksaan FisikPeriksa apakah ada kertas tersangkut, debu, atau benda asing di dalam bagian roller printer.\nPastikan komponen mekanik di dalam tidak terkunci atau terhalang kotoran.Nyalakan ulang printer (restart) setelah membersihkan area sekitar sensor kertas.",
     "tanggal": "2026-08-22T08:48:10.180Z"
   },
