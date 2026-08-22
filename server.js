@@ -2,7 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-
+const childProcess = require("child_process");
 const app = express();
 
 
@@ -20,7 +20,12 @@ const FILE =
 
 const UPLOAD_DIR =
     path.join(__dirname, "public", "uploads");
-
+const DOCS_UPLOAD_DIR =
+    path.join(
+        __dirname,
+        "docs",
+        "uploads"
+    );
 
 // ============================
 // BUAT FOLDER
@@ -44,7 +49,14 @@ if (!fs.existsSync(UPLOAD_DIR)) {
     );
 
 }
+if (!fs.existsSync(DOCS_UPLOAD_DIR)) {
 
+    fs.mkdirSync(
+        DOCS_UPLOAD_DIR,
+        { recursive: true }
+    );
+
+}
 
 if (!fs.existsSync(FILE)) {
 
@@ -221,7 +233,69 @@ function simpanArtikel(data) {
     );
 
 }
+function sinkronkanGitHubPages() {
 
+    try {
+
+        const docsArtikel =
+            path.join(
+                __dirname,
+                "docs",
+                "artikel.json"
+            );
+
+        const docsUploads =
+            path.join(
+                __dirname,
+                "docs",
+                "uploads"
+            );
+
+        // Buat folder docs/uploads jika belum ada
+        if (!fs.existsSync(docsUploads)) {
+
+            fs.mkdirSync(
+                docsUploads,
+                { recursive: true }
+            );
+
+        }
+
+        // Salin database artikel ke docs
+        fs.copyFileSync(
+            FILE,
+            docsArtikel
+        );
+
+        // Jalankan generator halaman SEO
+        childProcess.execFileSync(
+            process.execPath,
+            [
+                path.join(
+                    __dirname,
+                    "tools",
+                    "generate-pages.js"
+                )
+            ],
+            {
+                stdio: "inherit"
+            }
+        );
+
+        console.log(
+            "GitHub Pages berhasil diperbarui."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Gagal memperbarui GitHub Pages:",
+            error.message
+        );
+
+    }
+
+}
 
 // ============================
 // GET ARTIKEL
@@ -302,8 +376,9 @@ app.post(
         simpanArtikel(
             data
         );
-
-
+        
+        sinkronkanGitHubPages();
+        
         res.json({
 
             status:
@@ -350,7 +425,22 @@ app.post(
         const url =
             "/uploads/" +
             req.file.filename;
-
+            const sumberGambar =
+            path.join(
+                UPLOAD_DIR,
+                req.file.filename
+            );
+        
+        const tujuanGambar =
+            path.join(
+                DOCS_UPLOAD_DIR,
+                req.file.filename
+            );
+        
+        fs.copyFileSync(
+            sumberGambar,
+            tujuanGambar
+        );
 
         res.json({
 
@@ -436,6 +526,7 @@ app.put(
             data
         );
 
+        sinkronkanGitHubPages();
 
         res.json({
 
@@ -509,7 +600,7 @@ app.delete(
             data
         );
 
-
+        sinkronkanGitHubPages();
         res.json({
 
             status:

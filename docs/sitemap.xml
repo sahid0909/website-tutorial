@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<urlset
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-<loc>https://sahid0909.github.io/website-tutorial/</loc>
+    <loc>https://sahid0909.github.io/website-tutorial/</loc>
 </url>
 
 <url>
-<loc>https://sahid0909.github.io/website-tutorial/tutorial/membuat-web/</loc>
+    <loc>https://sahid0909.github.io/website-tutorial/tutorial/membuat-web/</loc>
 </url>
+
+<url>
+    <loc>https://sahid0909.github.io/website-tutorial/tutorial/cara-setting-mikrotik-untuk-pemula/</loc>
+</url>
+
 
 </urlset>
