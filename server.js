@@ -4,8 +4,98 @@ const path = require("path");
 const multer = require("multer");
 const { exec } = require("child_process");
 const childProcess = require("child_process");
+const crypto = require("crypto");
+const adminConfig =
+    require("./admin-config");
 const app = express();
 
+// ============================
+// SESSION ADMIN
+// ============================
+
+const sesiAdmin = new Set();
+
+function buatToken() {
+
+    return crypto
+        .randomBytes(32)
+        .toString("hex");
+
+}
+
+function ambilCookie(req, nama) {
+
+    const cookie =
+        req.headers.cookie || "";
+
+    const bagian =
+        cookie.split(";");
+
+    for (
+        let i = 0;
+        i < bagian.length;
+        i++
+    ) {
+
+        const pasangan =
+            bagian[i].trim();
+
+        if (
+            pasangan.indexOf(
+                nama + "="
+            ) === 0
+        ) {
+
+            return decodeURIComponent(
+                pasangan.substring(
+                    nama.length + 1
+                )
+            );
+
+        }
+
+    }
+
+    return null;
+
+}
+
+function sudahLogin(req) {
+
+    const token =
+        ambilCookie(
+            req,
+            "admin_session"
+        );
+
+    return (
+        token &&
+        sesiAdmin.has(token)
+    );
+
+}
+
+function wajibLogin(req, res, next) {
+
+    if (sudahLogin(req)) {
+
+        next();
+
+        return;
+
+    }
+
+    res.status(401).json({
+
+        status:
+            "gagal",
+
+        pesan:
+            "Anda harus login sebagai admin."
+
+    });
+
+}
 
 // ============================
 // KONFIGURASI
@@ -338,6 +428,125 @@ await jalankanPublikasi();
 }
 
 // ============================
+// LOGIN ADMIN
+// ============================
+
+app.post(
+    "/api/login",
+    function (
+        req,
+        res
+    ) {
+
+        const username =
+            req.body.username;
+
+        const password =
+            req.body.password;
+
+            if (
+                username ===
+                    adminConfig.username &&
+                password ===
+                    adminConfig.password
+            ) {
+            
+                const token =
+                    buatToken();
+            
+                sesiAdmin.add(token);
+            
+                res.setHeader(
+                    "Set-Cookie",
+                    "admin_session=" +
+                    encodeURIComponent(token) +
+                    "; HttpOnly; Path=/; SameSite=Lax"
+                );
+            
+                return res.json({
+            
+                    status:
+                        "berhasil"
+            
+                });
+            
+            }
+
+        res.status(401).json({
+
+            status:
+                "gagal",
+
+            pesan:
+                "Username atau password salah."
+
+        });
+
+    }
+);
+// ============================
+// LOGOUT ADMIN
+// ============================
+
+app.post(
+    "/api/logout",
+    function (req, res) {
+
+        const token =
+            ambilCookie(
+                req,
+                "admin_session"
+            );
+
+        if (token) {
+
+            sesiAdmin.delete(token);
+
+        }
+
+        res.setHeader(
+            "Set-Cookie",
+            "admin_session=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax"
+        );
+
+        res.json({
+
+            status:
+                "berhasil"
+
+        });
+
+    }
+);
+// ============================
+// CEK LOGIN
+// ============================
+
+app.get(
+    "/api/cek-login",
+    function (req, res) {
+
+        if (sudahLogin(req)) {
+
+            return res.json({
+
+                status:
+                    "berhasil"
+
+            });
+
+        }
+
+        res.status(401).json({
+
+            status:
+                "gagal"
+
+        });
+
+    }
+);
+// ============================
 // GET ARTIKEL
 // ============================
 
@@ -373,6 +582,7 @@ function buatSlug(teks) {
 }
 app.post(
     "/api/artikel",
+    wajibLogin,
     async function (
         req,
         res
@@ -439,6 +649,7 @@ app.post(
 
 app.post(
     "/api/upload",
+    wajibLogin,
     upload.single("gambar"),
     async function (
         req,
@@ -502,6 +713,7 @@ app.post(
 
 app.put(
     "/api/artikel/:id",
+    wajibLogin,
     function (
         req,
         res
@@ -588,6 +800,7 @@ app.put(
 
 app.delete(
     "/api/artikel/:id",
+    wajibLogin,
     function (
         req,
         res
