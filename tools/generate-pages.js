@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
@@ -18,6 +18,16 @@ function escapeHtml(text) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+function buatSlug(teks) {
+
+    return String(teks || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+
 }
 
 artikel.forEach(article => {
@@ -235,11 +245,202 @@ RK GROUP � 2026 BelajarTeknologi
     );
 });
 
+// ============================
+// BUAT HALAMAN KATEGORI
+// ============================
 
+const kategoriUnik =
+    [...new Set(
+        artikel
+            .map(function (article) {
+                return (
+                    article.kategori ||
+                    "Umum"
+                );
+            })
+            .filter(Boolean)
+    )];
+
+kategoriUnik.forEach(
+    function (kategori) {
+
+        const slugKategori =
+            buatSlug(kategori);
+
+        const folder =
+            path.join(
+                DOCS,
+                "kategori",
+                slugKategori
+            );
+
+        fs.mkdirSync(
+            folder,
+            {
+                recursive: true
+            }
+        );
+
+        const artikelKategori =
+            artikel.filter(
+                function (article) {
+
+                    return (
+                        (
+                            article.kategori ||
+                            "Umum"
+                        ).toLowerCase()
+                        ===
+                        kategori.toLowerCase()
+                    );
+
+                }
+            );
+
+        const daftarArtikel =
+            artikelKategori.map(
+                function (article) {
+
+                    return `
+<article class="card">
+
+<h3>
+<a href="../../tutorial/${article.slug}/">
+${escapeHtml(article.judul)}
+</a>
+</h3>
+
+<p>
+${escapeHtml(
+    String(article.isi || "")
+        .substring(0, 150)
+)}...
+</p>
+
+</article>
+`;
+
+                }
+            ).join("");
+
+        const html = `<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Kategori ${escapeHtml(kategori)} - BelajarTeknologi
+</title>
+
+<meta name="description"
+      content="Tutorial kategori ${escapeHtml(kategori)} di BelajarTeknologi.">
+
+<link rel="canonical"
+      href="${BASE_URL}/kategori/${slugKategori}/">
+
+<link rel="stylesheet"
+      href="../../style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="container navbar">
+
+<div class="logo">
+Belajar<span>Tekno</span>
+</div>
+
+<nav>
+
+<a href="../../">
+Beranda
+</a>
+
+<a href="../../#kategori">
+Kategori
+</a>
+
+</nav>
+
+</div>
+
+</header>
+
+<main class="container">
+
+<h1>
+Kategori: ${escapeHtml(kategori)}
+</h1>
+
+<div class="articles">
+
+${daftarArtikel}
+
+</div>
+
+</main>
+
+<footer>
+
+<div class="container">
+
+<h3>
+BelajarTeknologi
+</h3>
+
+<p>
+Belajar teknologi dengan tutorial sederhana
+dan mudah dipahami.
+</p>
+
+<p>
+RK GROUP © 2026 BelajarTeknologi
+</p>
+
+</div>
+
+</footer>
+
+</body>
+
+</html>`;
+
+        fs.writeFileSync(
+            path.join(
+                folder,
+                "index.html"
+            ),
+            html,
+            "utf8"
+        );
+
+        console.log(
+            "Membuat:",
+            `kategori/${slugKategori}/index.html`
+        );
+
+    }
+);
 const urls = [
     BASE_URL + "/"
 ];
+kategoriUnik.forEach(
+    function (kategori) {
 
+        urls.push(
+            `${BASE_URL}/kategori/${buatSlug(kategori)}/`
+        );
+
+    }
+);
 artikel.forEach(article => {
 
     if (article.slug) {
