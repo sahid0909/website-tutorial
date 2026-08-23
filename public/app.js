@@ -259,6 +259,10 @@ function cariArtikel() {
 // FILTER KATEGORI
 // ============================
 
+// ============================
+// LINK HALAMAN KATEGORI
+// ============================
+
 function filterKategori(kategori) {
 
     if (
@@ -266,56 +270,23 @@ function filterKategori(kategori) {
         kategori === "Semua"
     ) {
 
-        history.pushState(
-            {},
-            "",
-            "/"
-        );
-
-        tampilkanArtikel(
-            semuaArtikel
-        );
+        window.location.href =
+        "/website-tutorial/";
 
         return;
 
     }
 
-    const hasil =
-        semuaArtikel.filter(
-            function (article) {
-
-                return (
-                    (article.kategori || "")
-                        .toLowerCase()
-                        ===
-                    kategori
-                        .toLowerCase()
-                );
-
-            }
-        );
-
-
-    const params =
-        new URLSearchParams();
-
-    params.set(
-        "kategori",
+    const slug =
         kategori
-    );
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-");
 
-
-    history.pushState(
-        {},
-        "",
-        "?" + params.toString()
-    );
-
-
-    tampilkanArtikel(
-        hasil
-    );
-
+    window.location.href =
+        "/website-tutorial/kategori/" + slug + "/";
 }
 
 // ============================
