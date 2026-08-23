@@ -43,5 +43,14 @@
     "gambar": "/uploads/gambar-1787466110422.jpg",
     "isi": "untuk uji coba saja",
     "tanggal": "2026-08-23T06:21:50.444Z"
+  },
+  {
+    "id": 1787472869489,
+    "judul": "anak kecil tes",
+    "slug": "anak-kecil-tes",
+    "kategori": "Server",
+    "gambar": "/uploads/gambar-1787472869470.jpg",
+    "isi": "testing",
+    "tanggal": "2026-08-23T08:14:29.489Z"
   }
 ]
