@@ -49,8 +49,26 @@ artikel.forEach(article => {
         article.gambar
             ? BASE_URL + article.gambar
             : "";
-
-    const html = `<!DOCTYPE html>
+            const schema = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                "headline": article.judul || "",
+                "description": String(article.isi || "").substring(0, 155),
+                "url": `${BASE_URL}/tutorial/${article.slug}/`,
+                "datePublished": article.tanggal || "",
+                "dateModified": article.tanggal || "",
+                "author": {
+                    "@type": "Organization",
+                    "name": "BelajarTeknologi"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "BelajarTeknologi"
+                },
+                ...(image ? { "image": [image] } : {})
+            }).replace(/</g, "\\u003c");
+    const html = 
+    `<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -77,10 +95,37 @@ artikel.forEach(article => {
 <meta property="og:title"
       content="${title}">
 
-<meta property="og:description"
+      <meta property="og:description"
       content="${description}">
 
+<meta property="og:url"
+      content="${BASE_URL}/tutorial/${article.slug}/">
+
+${article.tanggal
+    ? `<meta property="article:published_time" content="${article.tanggal}">`
+    : ""}
+
+<meta property="article:section"
+      content="${escapeHtml(article.kategori || "Umum")}">
+
 ${image ? `<meta property="og:image" content="${image}">` : ""}
+
+<meta name="twitter:card"
+      content="summary_large_image">
+
+<meta name="twitter:title"
+      content="${title}">
+
+<meta name="twitter:description"
+      content="${description}">
+
+${image
+    ? `<meta name="twitter:image" content="${image}">`
+    : ""}
+
+<script type="application/ld+json">
+${schema}
+</script>
 
 <link rel="stylesheet"
       href="../../style.css">
@@ -167,7 +212,7 @@ dan mudah dipahami.
 </p>
 
 <p>
-RK GROUP © 2026 BelajarTeknologi
+RK GROUP ï¿½ 2026 BelajarTeknologi
 </p>
 
 </div>
