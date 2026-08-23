@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Login Admin - BelajarTekno</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="container navbar">
+
+<div class="logo">
+Belajar<span>Tekno</span>
+</div>
+
+</div>
+
+</header>
+
+<main class="container">
+
+<div class="card"
+     style="max-width:450px;margin:60px auto;">
+
+<h1>Login Admin</h1>
+
+<p>
+Silakan masuk untuk mengelola tutorial.
+</p>
+
+<form id="loginForm">
+
+<label>Username</label>
+
+<input
+    type="text"
+    id="username"
+    autocomplete="username"
+    required
+    style="width:100%;padding:12px;margin:10px 0 20px;"
+>
+
+<label>Password</label>
+
+<input
+    type="password"
+    id="password"
+    autocomplete="current-password"
+    required
+    style="width:100%;padding:12px;margin:10px 0 20px;"
+>
+
+<button
+    type="submit"
+    style="background:#2563eb;color:white;border:none;padding:12px 25px;border-radius:6px;cursor:pointer;"
+>
+Login
+</button>
+
+<p id="pesan"
+   style="color:#dc2626;margin-top:20px;">
+</p>
+
+</form>
+
+</div>
+
+</main>
+
+<script>
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            const username =
+                document.getElementById(
+                    "username"
+                ).value;
+
+            const password =
+                document.getElementById(
+                    "password"
+                ).value;
+
+            const pesan =
+                document.getElementById(
+                    "pesan"
+                );
+
+            pesan.textContent =
+                "Memproses...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/login",
+                        {
+                            method: "POST",
+                            credentials:
+                                "same-origin",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    username:
+                                        username,
+                                    password:
+                                        password
+                                })
+
+                        }
+                    );
+
+                const hasil =
+                    await response.json();
+
+                if (
+                    hasil.status ===
+                    "berhasil"
+                ) {
+
+                    window.location.href =
+                        "/admin.html";
+
+                    return;
+
+                }
+
+                pesan.textContent =
+                    hasil.pesan ||
+                    "Username atau password salah.";
+
+            } catch (error) {
+
+                console.error(error);
+
+                pesan.textContent =
+                    "Tidak dapat terhubung ke server.";
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

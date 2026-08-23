@@ -71,7 +71,7 @@ style="width:100%;padding:12px;margin:10px 0 20px;"
 <option>Pemrograman</option>
 <option>Komputer</option>
 <option>Server</option>
-<option>Jaringan</option>
+<option>servis printer</option>
 <option>Teknologi</option>
 
 </select>
@@ -131,7 +131,40 @@ Memuat artikel...
 
 
 <script>
+async function cekLogin() {
 
+try {
+
+    const response =
+        await fetch(
+            "/api/cek-login"
+        );
+
+    const hasil =
+        await response.json();
+
+    if (
+        hasil.status !==
+        "berhasil"
+    ) {
+
+        window.location.href =
+            "/login.html";
+
+    }
+
+} catch (error) {
+
+    console.error(error);
+
+    window.location.href =
+        "/login.html";
+
+}
+
+}
+
+cekLogin();
 let artikel = [];
 
 
