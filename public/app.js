@@ -125,7 +125,7 @@ function cariArtikel() {
 
     const input =
         document.getElementById(
-            "pencarian"
+            "search"
         );
 
 
@@ -181,14 +181,22 @@ function cariArtikel() {
 // FILTER KATEGORI
 // ============================
 
-function filterKategori(
-    kategori
-) {
+// ============================
+// FILTER KATEGORI
+// ============================
+
+function filterKategori(kategori) {
 
     if (
         !kategori ||
         kategori === "Semua"
     ) {
+
+        history.pushState(
+            {},
+            "",
+            "/"
+        );
 
         tampilkanArtikel(
             semuaArtikel
@@ -197,7 +205,6 @@ function filterKategori(
         return;
 
     }
-
 
     const hasil =
         semuaArtikel.filter(
@@ -215,25 +222,27 @@ function filterKategori(
         );
 
 
+    const params =
+        new URLSearchParams();
+
+    params.set(
+        "kategori",
+        kategori
+    );
+
+
+    history.pushState(
+        {},
+        "",
+        "?" + params.toString()
+    );
+
+
     tampilkanArtikel(
         hasil
     );
 
 }
-
-
-// ============================
-// TAMPILKAN SEMUA
-// ============================
-
-function tampilkanSemua() {
-
-    tampilkanArtikel(
-        semuaArtikel
-    );
-
-}
-
 
 // ============================
 // BACA ARTIKEL
@@ -285,5 +294,55 @@ function bacaArtikel(id) {
 // ============================
 // MULAI
 // ============================
+// ============================
+// KATEGORI DARI URL
+// ============================
 
-ambilArtikel();
+function bacaKategoriDariURL() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const kategori =
+        params.get("kategori");
+
+
+    if (!kategori) {
+
+        return;
+
+    }
+
+
+    const hasil =
+        semuaArtikel.filter(
+            function (article) {
+
+                return (
+                    (article.kategori || "")
+                        .toLowerCase()
+                        ===
+                    kategori
+                        .toLowerCase()
+                );
+
+            }
+        );
+
+
+    tampilkanArtikel(
+        hasil
+    );
+
+}
+async function mulaiWebsite() {
+
+    await ambilArtikel();
+
+    bacaKategoriDariURL();
+
+}
+
+mulaiWebsite();
