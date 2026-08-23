@@ -214,3 +214,33 @@ footer {
     }
 
 }
+/* ============================
+   BREADCRUMB
+   ============================ */
+
+   .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    color: #555;
+}
+
+.breadcrumb > * {
+    line-height: 1.5;
+}

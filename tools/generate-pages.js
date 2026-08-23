@@ -164,7 +164,19 @@ Belajar<span>Tekno</span>
 <main class="container">
 
 <article class="article-page">
-
+<nav class="breadcrumb">
+<a href="../../">
+Beranda
+</a>
+>
+<a href="../../kategori/${buatSlug(article.kategori || "Umum")}/">
+${escapeHtml(article.kategori || "Umum")}
+</a>
+>
+<span>
+${title}
+</span>
+</nav>
 <div class="category">
 ${escapeHtml(article.kategori || "Umum")}
 </div>
