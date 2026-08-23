@@ -12,13 +12,16 @@ async function ambilArtikel() {
         const response =
             await fetch("/api/artikel");
 
-        semuaArtikel =
+                semuaArtikel =
             await response.json();
+
+        tampilkanKategori(
+            semuaArtikel
+        );
 
         tampilkanArtikel(
             semuaArtikel
         );
-
     } catch (error) {
 
         document.getElementById(
@@ -31,7 +34,78 @@ async function ambilArtikel() {
     }
 
 }
+// ============================
+// TAMPILKAN KATEGORI
+// ============================
 
+function tampilkanKategori(data) {
+
+    const container =
+        document.getElementById(
+            "kategoriList"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    const kategoriUnik =
+        [...new Set(
+            data
+                .map(function (article) {
+                    return (
+                        article.kategori ||
+                        "Umum"
+                    );
+                })
+                .filter(Boolean)
+        )];
+
+    container.innerHTML = "";
+
+    const tombolSemua =
+        document.createElement(
+            "button"
+        );
+
+    tombolSemua.textContent =
+        "Semua";
+
+    tombolSemua.onclick =
+        function () {
+            filterKategori("Semua");
+        };
+
+    container.appendChild(
+        tombolSemua
+    );
+
+    kategoriUnik.forEach(
+        function (kategori) {
+
+            const tombol =
+                document.createElement(
+                    "button"
+                );
+
+            tombol.textContent =
+                kategori;
+
+            tombol.onclick =
+                function () {
+                    filterKategori(
+                        kategori
+                    );
+                };
+
+            container.appendChild(
+                tombol
+            );
+
+        }
+    );
+
+}
 
 // ============================
 // TAMPILKAN ARTIKEL
