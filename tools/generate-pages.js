@@ -77,7 +77,7 @@ artikel.forEach(article => {
                 },
                 ...(image ? { "image": [image] } : {})
             }).replace(/</g, "\\u003c");
-    const html = 
+    const html =
     `<!DOCTYPE html>
 <html lang="id">
 
@@ -222,7 +222,7 @@ dan mudah dipahami.
 </p>
 
 <p>
-RK GROUP � 2026 BelajarTeknologi
+RK GROUP ? 2026 BelajarTeknologi
 </p>
 
 </div>
@@ -336,10 +336,31 @@ ${escapeHtml(
 <title>
 Kategori ${escapeHtml(kategori)} - BelajarTeknologi
 </title>
-
 <meta name="description"
       content="Tutorial kategori ${escapeHtml(kategori)} di BelajarTeknologi.">
-
+      <meta property="og:type"
+      content="website">
+<meta property="og:title"
+      content="Kategori ${escapeHtml(kategori)} - BelajarTeknologi">
+<meta property="og:description"
+      content="Tutorial kategori ${escapeHtml(kategori)} di BelajarTeknologi.">
+<meta property="og:url"
+      content="${BASE_URL}/kategori/${slugKategori}/">
+<meta name="twitter:card"
+      content="summary_large_image">
+<meta name="twitter:title"
+      content="Kategori ${escapeHtml(kategori)} - BelajarTeknologi">
+<meta name="twitter:description"
+      content="Tutorial kategori ${escapeHtml(kategori)} di BelajarTeknologi.">
+<script type="application/ld+json">
+${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `Kategori ${kategori}`,
+    "url": `${BASE_URL}/kategori/${slugKategori}/`,
+    "description": `Tutorial kategori ${kategori} di BelajarTeknologi.`
+})}
+</script
 <link rel="canonical"
       href="${BASE_URL}/kategori/${slugKategori}/">
 
@@ -402,7 +423,7 @@ dan mudah dipahami.
 </p>
 
 <p>
-RK GROUP © 2026 BelajarTeknologi
+RK GROUP � 2026 BelajarTeknologi
 </p>
 
 </div>
@@ -412,16 +433,11 @@ RK GROUP © 2026 BelajarTeknologi
 </body>
 
 </html>`;
-
-        fs.writeFileSync(
-            path.join(
-                folder,
-                "index.html"
-            ),
-            html,
-            "utf8"
-        );
-
+fs.writeFileSync(
+    path.join(folder, "index.html"),
+    html.replace(/[ \t]+$/gm, ""),
+    "utf8"
+);
         console.log(
             "Membuat:",
             `kategori/${slugKategori}/index.html`
