@@ -19,6 +19,85 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+function formatArticle(text) {
+    let source = String(text || "");
+
+    const sections = [
+        {
+            title: "1. Teks Berjalan Dasar (Ke Kiri)",
+            start: "1. Teks Berjalan Dasar (Ke Kiri)",
+            end: "2. Mengubah Arah Teks"
+        },
+        {
+            title: "2. Mengubah Arah Teks",
+            start: "2. Mengubah Arah Teks",
+            end: "3. Mengatur Kecepatan Teks"
+        },
+        {
+            title: "3. Mengatur Kecepatan Teks",
+            start: "3. Mengatur Kecepatan Teks",
+            end: "4. Mengatur Lebar Teks Berjalan"
+        },
+        {
+            title: "4. Mengatur Lebar Teks Berjalan",
+            start: "4. Mengatur Lebar Teks Berjalan",
+            end: "5. Memantulkan Teks (Bounce)"
+        },
+        {
+            title: "5. Memantulkan Teks (Bounce)",
+            start: "5. Memantulkan Teks (Bounce)",
+            end: null
+        }
+    ];
+
+    let html = "";
+
+    sections.forEach(function (section) {
+        const startIndex = source.indexOf(section.start);
+
+        if (startIndex === -1) {
+            return;
+        }
+
+        let endIndex = section.end
+            ? source.indexOf(section.end, startIndex + section.start.length)
+            : source.length;
+
+        if (endIndex === -1) {
+            endIndex = source.length;
+        }
+
+        let content = source.substring(
+            startIndex + section.start.length,
+            endIndex
+        ).trim();
+
+        html += "<h2>" +
+            escapeHtml(section.title) +
+            "</h2>\n";
+
+        content = escapeHtml(content);
+
+        content = content.replace(
+            /HTML/g,
+            '<div class="code-label">HTML</div>'
+        );
+
+        content = content.replace(
+            /&lt;marquee([\s\S]*?)&gt;([\s\S]*?)&lt;\/marquee&gt;/gi,
+            '<pre class="code-block"><code>&lt;marquee$1&gt;$2&lt;/marquee&gt;</code></pre>'
+        );
+
+        content = content.replace(
+            /\n+/g,
+            "<br>"
+        );
+
+        html += content + "\n";
+    });
+
+    return html;
+}
 function buatSlug(teks) {
 
     return String(teks || "")
@@ -208,7 +287,7 @@ ${
 
 <div class="article-content">
 
-${escapeHtml(article.isi)}
+${formatArticle(article.isi)}
 
 </div>
 

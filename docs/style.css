@@ -213,4 +213,33 @@ footer {
         font-size: 16px;
     }
 
+}.code-block {
+    display: block;
+    overflow-x: auto;
+    padding: 16px;
+    margin: 20px 0;
+    border-radius: 8px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre;
+}
+.code-block code {
+    font-family: inherit;
+}
+.code-label {
+    display: inline-block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+}
+.article-content h2 {
+    margin-top: 30px;
+    margin-bottom: 12px;
+    font-size: 24px;
+    line-height: 1.4;
 }
