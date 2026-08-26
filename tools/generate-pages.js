@@ -31,7 +31,7 @@ function formatArticle(text) {
         },
         {
             title: "2. Tambahkan Tag <form>",
-            start: "2. Tambahkan Tag <form>",
+            start: "2. Tambahkan Tag",
             end: "3. Tambahkan Input dan Tombol"
         },
         {
@@ -48,7 +48,7 @@ function formatArticle(text) {
 
     const isFormArticle =
         source.includes("1. Siapkan Struktur Dasar HTML") &&
-        source.includes("2. Tambahkan Tag <form>") &&
+        source.includes("2. Tambahkan Tag") &&
         source.includes("3. Tambahkan Input dan Tombol");
 
     // ==========================================
