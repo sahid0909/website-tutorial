@@ -686,6 +686,10 @@ ${escapeHtml(
 )}...
 </p>
 
+<a class="btn-baca" href="../../tutorial/${article.slug}/">
+Baca Tutorial
+</a>
+
 </article>
 `;
 
