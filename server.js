@@ -931,13 +931,25 @@ app.get(
     "/tutorial/:slug",
     function (req, res) {
 
-        res.sendFile(
-            path.join(
-                __dirname,
-                "public",
-                "artikel.html"
-            )
+        const slug = req.params.slug;
+
+        const filePath = path.join(
+            __dirname,
+            "docs",
+            "tutorial",
+            slug,
+            "index.html"
         );
+
+        if (!fs.existsSync(filePath)) {
+
+            return res.status(404).send(
+                "<h1>Artikel tidak ditemukan</h1>"
+            );
+
+        }
+
+        res.sendFile(filePath);
 
     }
 );

@@ -127,6 +127,75 @@ Pemrograman
 
 <div class="article-content">
 
+<h2>1. Siapkan Struktur Dasar HTML</h2>
+<div class="code-label">HTML</div><pre class="code-block"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Halaman Admin&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;!-- Kode Form Admin akan diletakkan di sini --&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h2>2. Tambahkan Tag &lt;form&gt;</h2>
+<div class="code-label">HTML</div><pre class="code-block"><code>&lt;h2&gt;Form Login Admin&lt;/h2&gt;
+&lt;form action=&quot;proses-login.php&quot; method=&quot;POST&quot;&gt;
+    &lt;!-- Isi form ada di sini --&gt;
+&lt;/form&gt;</code></pre><br>action: Tempat tujuan data akan dikirim saat tombol dikirim (submit).<br>method: Cara data dikirim, biasanya menggunakan POST untuk data rahasia seperti kata sandi (password).
+<h2>3. Tambahkan Input dan Tombol</h2>
+<div class="code-label">HTML</div><pre class="code-block"><code>&lt;h2&gt;Form Login Admin&lt;/h2&gt;
+&lt;form action=&quot;proses-login.php&quot; method=&quot;POST&quot;&gt;
+    &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; placeholder=&quot;Masukkan username&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; placeholder=&quot;Masukkan password&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;button type=&quot;submit&quot;&gt;Masuk&lt;/button&gt;
+&lt;/form&gt;</code></pre><br>&lt;label&gt;: Teks penjelasan untuk kolom isian.<br>input: Kolom tempat pengguna mengetik teks.<br>placeholder: Teks petunjuk samar di dalam kolom isian.<br>required: Aturan agar form wajib diisi sebelum dikirim
+<h2>4. Percantik Tampilan dengan CSS</h2>
+<div class="code-label">CSS</div><pre class="code-block"><code>&lt;style&gt;
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+&lt;/style&gt;</code></pre>
 
 
 </div>
