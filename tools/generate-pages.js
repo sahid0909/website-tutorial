@@ -20,29 +20,275 @@ function escapeHtml(text) {
         .replace(/'/g, "&#039;");
 }
 function formatArticle(text) {
+
     let source = String(text || "");
 
     const sections = [
+        {
+            title: "1. Siapkan Struktur Dasar HTML",
+            start: "1. Siapkan Struktur Dasar HTML",
+            end: "2. Tambahkan Tag <form>"
+        },
+        {
+            title: "2. Tambahkan Tag <form>",
+            start: "2. Tambahkan Tag <form>",
+            end: "3. Tambahkan Input dan Tombol"
+        },
+        {
+            title: "3. Tambahkan Input dan Tombol",
+            start: "3. Tambahkan Input dan Tombol",
+            end: "4. Percantik Tampilan dengan CSS"
+        },
+        {
+            title: "4. Percantik Tampilan dengan CSS",
+            start: "4. Percantik Tampilan dengan CSS",
+            end: null
+        }
+    ];
+
+    const isFormArticle =
+        source.includes("1. Siapkan Struktur Dasar HTML") &&
+        source.includes("2. Tambahkan Tag <form>") &&
+        source.includes("3. Tambahkan Input dan Tombol");
+
+    // ==========================================
+    // ARTIKEL FORM HTML
+    // ==========================================
+
+    if (isFormArticle) {
+
+        let html = "";
+
+        sections.forEach(function (section) {
+
+            const startIndex = source.indexOf(section.start);
+
+            if (startIndex === -1) {
+                return;
+            }
+
+            let endIndex = section.end
+                ? source.indexOf(
+                    section.end,
+                    startIndex + section.start.length
+                )
+                : source.length;
+
+            if (endIndex === -1) {
+                endIndex = source.length;
+            }
+
+            let content = source.substring(
+                startIndex + section.start.length,
+                endIndex
+            ).trim();
+
+            html +=
+                "<h2>" +
+                escapeHtml(section.title) +
+                "</h2>\n";
+
+            // --------------------------------------
+            // Pisahkan bagian kode dari penjelasan
+            // --------------------------------------
+
+            const codeRanges = [];
+
+            // DOCTYPE sampai </html>
+            if (section.title === "1. Siapkan Struktur Dasar HTML") {
+
+                const codeStart = content.indexOf("<!DOCTYPE html>");
+                const codeEnd = content.indexOf("</html>");
+
+                if (codeStart !== -1 && codeEnd !== -1) {
+                    codeRanges.push({
+                        start: codeStart,
+                        end: codeEnd + "</html>".length
+                    });
+                }
+            }
+
+            // Form login
+            if (section.title === "2. Tambahkan Tag <form>") {
+
+                const codeStart = content.indexOf("<h2>Form Login Admin</h2>");
+                const codeEnd = content.indexOf("</form>");
+
+                if (codeStart !== -1 && codeEnd !== -1) {
+                    codeRanges.push({
+                        start: codeStart,
+                        end: codeEnd + "</form>".length
+                    });
+                }
+            }
+
+            // Form input lengkap
+            if (section.title === "3. Tambahkan Input dan Tombol") {
+
+                const codeStart = content.indexOf("<h2>Form Login Admin</h2>");
+                const codeEnd = content.indexOf("</form>");
+
+                if (codeStart !== -1 && codeEnd !== -1) {
+                    codeRanges.push({
+                        start: codeStart,
+                        end: codeEnd + "</form>".length
+                    });
+                }
+            }
+
+            // CSS
+            if (section.title === "4. Percantik Tampilan dengan CSS") {
+
+                const codeStart = content.indexOf("<style>");
+                const codeEnd = content.indexOf("</style>");
+
+                if (codeStart !== -1 && codeEnd !== -1) {
+                    codeRanges.push({
+                        start: codeStart,
+                        end: codeEnd + "</style>".length
+                    });
+                }
+            }
+
+            // --------------------------------------
+            // Jika tidak ada kode
+            // --------------------------------------
+
+            if (codeRanges.length === 0) {
+
+                let plain = escapeHtml(content);
+
+                plain = plain.replace(
+                    /\n\s*\n/g,
+                    "<br><br>"
+                );
+
+                plain = plain.replace(
+                    /\n/g,
+                    "<br>"
+                );
+
+                html += plain + "\n";
+
+                return;
+            }
+
+            // --------------------------------------
+            // Gabungkan kode + teks
+            // --------------------------------------
+
+            let posisi = 0;
+
+            codeRanges.forEach(function (range) {
+
+                // Teks sebelum kode
+                if (range.start > posisi) {
+
+                    let before =
+                        content.substring(posisi, range.start).trim();
+
+                    if (before) {
+
+                        before = escapeHtml(before);
+
+                        before = before.replace(
+                            /\n\s*\n/g,
+                            "<br><br>"
+                        );
+
+                        before = before.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+
+                        html += before;
+                    }
+                }
+
+                // Kode
+                let code =
+                    content.substring(
+                        range.start,
+                        range.end
+                    ).trim();
+
+                    let codeLabel = "HTML";
+
+                    if (section.title === "4. Percantik Tampilan dengan CSS") {
+                        codeLabel = "CSS";
+                    }
+                    
+                    html +=
+                        '<div class="code-label">' +
+                        codeLabel +
+                        '</div>' +
+                        '<pre class="code-block"><code>' +
+                        escapeHtml(code) +
+                        '</code></pre>';
+
+                posisi = range.end;
+            });
+
+            // Teks setelah kode
+            if (posisi < content.length) {
+
+                let after =
+                    content.substring(posisi).trim();
+
+                if (after) {
+
+                    after = escapeHtml(after);
+
+                    after = after.replace(
+                        /\n\s*\n/g,
+                        "<br><br>"
+                    );
+
+                    after = after.replace(
+                        /\n/g,
+                        "<br>"
+                    );
+
+                    html += "<br>" + after;
+                }
+            }
+
+            html += "\n";
+        });
+
+        return html;
+    }
+
+    // ==========================================
+    // ARTIKEL LAIN / RUNNING TEXT
+    // ==========================================
+
+    const runningSections = [
+
         {
             title: "1. Teks Berjalan Dasar (Ke Kiri)",
             start: "1. Teks Berjalan Dasar (Ke Kiri)",
             end: "2. Mengubah Arah Teks"
         },
+
         {
             title: "2. Mengubah Arah Teks",
             start: "2. Mengubah Arah Teks",
             end: "3. Mengatur Kecepatan Teks"
         },
+
         {
             title: "3. Mengatur Kecepatan Teks",
             start: "3. Mengatur Kecepatan Teks",
             end: "4. Mengatur Lebar Teks Berjalan"
         },
+
         {
             title: "4. Mengatur Lebar Teks Berjalan",
             start: "4. Mengatur Lebar Teks Berjalan",
             end: "5. Memantulkan Teks (Bounce)"
         },
+
         {
             title: "5. Memantulkan Teks (Bounce)",
             start: "5. Memantulkan Teks (Bounce)",
@@ -50,9 +296,32 @@ function formatArticle(text) {
         }
     ];
 
+    const isRunningText =
+        source.includes("1. Teks Berjalan Dasar (Ke Kiri)") ||
+        source.includes("2. Mengubah Arah Teks") ||
+        source.includes("3. Mengatur Kecepatan Teks");
+
+    if (!isRunningText) {
+
+        let html = escapeHtml(source);
+
+        html = html.replace(
+            /\n\s*\n/g,
+            "<br><br>"
+        );
+
+        html = html.replace(
+            /\n/g,
+            "<br>"
+        );
+
+        return html;
+    }
+
     let html = "";
 
-    sections.forEach(function (section) {
+    runningSections.forEach(function (section) {
+
         const startIndex = source.indexOf(section.start);
 
         if (startIndex === -1) {
@@ -60,7 +329,10 @@ function formatArticle(text) {
         }
 
         let endIndex = section.end
-            ? source.indexOf(section.end, startIndex + section.start.length)
+            ? source.indexOf(
+                section.end,
+                startIndex + section.start.length
+            )
             : source.length;
 
         if (endIndex === -1) {
@@ -72,7 +344,8 @@ function formatArticle(text) {
             endIndex
         ).trim();
 
-        html += "<h2>" +
+        html +=
+            "<h2>" +
             escapeHtml(section.title) +
             "</h2>\n";
 
@@ -89,7 +362,12 @@ function formatArticle(text) {
         );
 
         content = content.replace(
-            /\n+/g,
+            /\n\s*\n/g,
+            "<br><br>"
+        );
+
+        content = content.replace(
+            /\n/g,
             "<br>"
         );
 
